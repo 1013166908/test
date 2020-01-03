@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .time{
+            margin:10px 0;
+        }
+        input{
+            width: 30px;
+            height: 16px;
+        }
+        button{
+            width: 200px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+请输入产生条数：<input id="ipt" type="text">
+<br>
+<div class="time">
+    产生数据时间范围为：<br>
+    <input type="text" id="y1">年<input type="text" id="m1">月<input type="text" id="d1">日——
+    <input type="text" id="y2">年<input type="text" id="m2">月<input type="text" id="d2">日
+</div>
+<button id="btn">产生数据</button>
+<p>产生数据如下，请直接复制：</p>
+<div id="div"></div>
+</body>
+<script>
+    btn.onclick=function(){
+        //产生多少条
+        let n=ipt.value;
+        //日期范围
+        let str1=y1.value+"/"+m1.value+"/"+d1.value+" 00:00:00"
+        let str2=y2.value+"/"+m2.value+"/"+d2.value+" 23:59:59"
+        let date1=new Date(str1);
+        let date2=new Date(str2);
+        // let date1=new Date("2018/01/01 00:00:00");
+        // let date2=new Date("2019/12/31 23:59:59");
+        let a=date2-date1;
+        //状态表
+        let state=["1001","2001","2002","2003","3001","3002","4001","4002","4003","4004","4005","5001","5002","5003"]
+
+        let arr=[];
+        //单位数补0
+        function setNum(n){
+            if(n<10) return "0"+n;
+            else return n;
+        }
+        //随机产生3-8位数名字
+        function createName() {
+            let nameLength=Math.floor(Math.random()*6+3); //名字长度
+            let name="";
+            while(nameLength--){
+                let char=Math.floor(Math.random()*26+97); //随机选取字母
+                name+=String.fromCharCode(char);
+            }
+            return name;
+        }
+
+        //产生n条数据
+        for(let i=0;i<n;i++){
+            arr[i]={};
+            let date=new Date(Math.random()*a+date1.getTime());
+            let y=String(date.getFullYear());
+            let m=setNum(date.getMonth()+1);
+            let d=setNum(date.getDate());
+            let id=Math.floor(Math.random()*1000000);
+            //产生id
+            arr[i].id=y+m+d+"12345678"+id;
+            //产生时间戳
+            arr[i].time=date.getTime();
+            //产生商品名
+            arr[i].name=createName();
+            //产生类型1-4个
+            let typeNum=Math.floor(Math.random()*4+1); //类型数量
+            arr[i].type=[];
+            while(typeNum--){
+                arr[i].type[typeNum]=createName();
+            }
+            //产生价格
+            arr[i].price=(Math.floor(Math.random()*10000)/10).toFixed(2);
+            //产生数量
+            arr[i].num=Math.floor(Math.random()*20+1);
+            //产生状态
+            arr[i].state=state[Math.floor(Math.random()*14)];
+            //图片地址暂为空
+            arr[i].images="";
+        }
+
+        div.innerHTML=JSON.stringify(arr);
+    }
+</script>
+</html>
